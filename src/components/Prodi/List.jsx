@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 export default function List(){
     const[prodi,setProdi] = useState([]);
     useEffect(()=>{
-        axios.get('http://project-apiif-3-b.vercel.app/api/api/prodi')
+        axios.get('https://project-apiif-3-b.vercel.app/api/api/prodi')
         .then((response) =>{
             console.log(response.data.result)
             setProdi(response.data.result)
