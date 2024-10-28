@@ -1,5 +1,8 @@
-import React ,{Suspense} from "react"
+import React ,{Suspense,useState} from "react"
 import {BrowserRouter as Router, Routes, Route, NavLink} from "react-router-dom"
+import Logout from "./components/Logout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 const Home = React.lazy(() => import("./components/Home"))
 const FakultasList = React.lazy(() => import("./components/Fakultas/List"))
@@ -8,7 +11,14 @@ const FakultasCreate = React.lazy(()=>import("./components/Fakultas/Create"))
 const ProdiCreate = React.lazy(()=>import("./components/Prodi/Create"))
 const FakultasEdit = React.lazy(()=>import("./components/Fakultas/Edit"))
 const ProdiEdit = React.lazy(() => import("./components/Prodi/Edit"))
-function App() {
+// const ProtectedRoute = React.lazy(() =>import("./components/ProtectedRoute"))
+const Login = React.lazy(() => import("./components/Login"))
+
+
+
+
+const App = () => {
+  const [token, setToken] = useState(localStorage.getItem("authToken"));
   return(
     <Router>
       {/* navbar */}
@@ -29,6 +39,17 @@ function App() {
       <li className="nav-item">
       <NavLink className={({isActive})=>`nav-link ${isActive ? "active":""}`} aria-current="page" to='/prodi'>Prodi</NavLink>
       </li>
+      <li>
+        {token? (
+          <NavLink className="nav-link" to="/logout">
+            LogOut
+          </NavLink>
+        ) : (
+          <NavLink className="nav-link" to="/login">
+            Login
+          </NavLink>
+        )}
+      </li>
     </ul>
   </div>
 </nav>
@@ -36,17 +57,21 @@ function App() {
       <Suspense fallback={<div>Loading....</div>}>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/fakultas" element={<FakultasList />}/>
+        <Route path="/fakultas" element={<ProtectedRoute><FakultasList /></ProtectedRoute>}/>
         <Route path="/fakultas/create" element={<FakultasCreate />}/>
         <Route path="/fakultas/edit/:id" element={<FakultasEdit />} />
-        <Route path="/prodi" element={<ProdiList />} />
+        <Route path="/prodi" element={<ProtectedRoute><ProdiList /></ProtectedRoute>} />
         <Route path="/prodi/create" element={<ProdiCreate />} />
         <Route path="/prodi/edit/:id" element={<ProdiEdit />} />
+        <Route path="/login" element={<Login setToken={setToken} />}/>
+        <Route path="/logout" element={<Logout />}/>
       </Routes>
 
       </Suspense>
     </Router>
-  )
-}
+  );
+};
+
+
 
 export default App

@@ -8,6 +8,7 @@ export default function CreateProdi(){
     const[fakultasList, setFakultasList] = useState([]);
     const[error, setError] = useState("");
     const[success, setSuccess] = useState("");
+    const token = localStorage.getItem("authToken");
 
     useEffect(() =>{
         const fetchFakultas = async() => {
@@ -42,6 +43,12 @@ export default function CreateProdi(){
                 {
                     nama: namaProdi,
                     fakultas_id : fakultasId,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json'
+                    }
                 }
             );
 
